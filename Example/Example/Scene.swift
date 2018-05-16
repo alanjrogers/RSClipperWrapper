@@ -18,20 +18,21 @@ class Scene : SKScene {
         backgroundColor = SKColor.white
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
-        let polygonNode1 = SKShapeNode()
-        polygonNode1.strokeColor = SKColor.black
-        polygonNode1.lineWidth = 1
-        polygonNode1.path = CGPath.pathOfPolygons(polygons: [polygon1])
-        addChild(polygonNode1)
-        
-        let polygonNode2 = SKShapeNode()
-        polygonNode2.strokeColor = SKColor.black
-        polygonNode2.lineWidth = 1
-        polygonNode2.path = CGPath.pathOfPolygons(polygons: [polygon2])
-        addChild(polygonNode2)
-        
-        let clipperPolygon = Clipper.intersectPolygons([polygon1], withPolygons: [polygon2])
-        
+//        let polygonNode1 = SKShapeNode()
+//        polygonNode1.strokeColor = SKColor.black
+//        polygonNode1.lineWidth = 1
+//        polygonNode1.path = CGPath.pathOfPolygons(polygons: [polygon1])
+//        addChild(polygonNode1)
+//
+//        let polygonNode2 = SKShapeNode()
+//        polygonNode2.strokeColor = SKColor.black
+//        polygonNode2.lineWidth = 1
+//        polygonNode2.path = CGPath.pathOfPolygons(polygons: [polygon2])
+//        addChild(polygonNode2)
+//
+//        let clipperPolygon = Clipper.intersectPolygons([polygon1], withPolygons: [polygon2])
+        let clipperPolygon = Clipper.unionPolygons([polygon1], withPolygons: [polygon2])
+
         let clipperNode = SKShapeNode()
         clipperNode.lineWidth = 0
         clipperNode.fillColor = SKColor.red
@@ -41,7 +42,7 @@ class Scene : SKScene {
         
         let pt = CGPoint.zero
         let inPoly = Clipper.polygonContainsPoint(clipperPolygon[0], point: pt)
-        NSLog(inPoly ? "point is in poly" : "point is not in poly")
+        Swift.print(clipperPolygon.first!.count)
     }
 }
 

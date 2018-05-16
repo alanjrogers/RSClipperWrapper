@@ -4,9 +4,7 @@
 //
 //  Created by Matthias Fey on 07.08.15.
 //  Copyright © 2015 Matthias Fey. All rights reserved.
-//
-
-import UIKit
+//  Upgraded to Swift 4 syntax and ported to macOS by robm
 
 /// The `Clipper` class performs polygon clipping - union, difference,
 /// intersection & exclusive-or. `Clipper` is built as a wrapper of the open source
@@ -21,44 +19,61 @@ final public class Clipper {
         
         fileprivate var mapped: _FillType {
             switch self {
-                case .evenOdd: return _FillType.EvenOdd
-                case .nonZero: return _FillType.NonZero
-                case .positive: return _FillType.Positive
-                case .negative: return _FillType.Negative
+            case .evenOdd: return _FillType.EvenOdd
+            case .nonZero: return _FillType.NonZero
+            case .positive: return _FillType.Positive
+            case .negative: return _FillType.Negative
             }
         }
     }
     
-    /// Constructs and returns the union of an array of polygons with an
-    /// array of polygons.
-    public class func unionPolygons(_ subjPolygons: [[CGPoint]], subjFillType: FillType = .evenOdd, withPolygons clipPolygons: [[CGPoint]], clipFillType: FillType = .evenOdd) -> [[CGPoint]] {
-        
-        return (_Clipper.unionPolygons(subjPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject], subjFillType: subjFillType.mapped, withPolygons: clipPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject], clipFillType: clipFillType.mapped) as! [[NSValue]]).map { $0.map { $0.cgPointValue } }
+    /// Constructs and returns the union of an array of polygons
+    public class func union(_ polygons: [[CGPoint]], fillType: FillType = .evenOdd, clipFillType: FillType = .evenOdd) -> [[CGPoint]] {
+        return (_Clipper.unionPolygons(
+            polygons.map { $0.map { NSValue(cgPoint: $0)! } } as [AnyObject],
+            subjFillType: fillType.mapped,
+            clipFillType: clipFillType.mapped) as! [[NSValue]]
+        ).map { $0.map { $0.cgPointValue } }
     }
-
+    
     /// Constructs and returns the difference of an array of polygons
     /// from an array of polygons.
-    public class func differencePolygons(_ subjPolygons: [[CGPoint]], subjFillType: FillType = .evenOdd, fromPolygons clipPolygons: [[CGPoint]], clipFillType: FillType = .evenOdd) -> [[CGPoint]] {
-        
-        return (_Clipper.differencePolygons(subjPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject], subjFillType: subjFillType.mapped, fromPolygons: clipPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject], clipFillType: clipFillType.mapped) as! [[NSValue]]).map { $0.map { $0.cgPointValue } }
-        }
+    public class func difference(_ polygons: [[CGPoint]], fillType: FillType = .evenOdd, fromPolygons clipPolygons: [[CGPoint]], clipFillType: FillType = .evenOdd) -> [[CGPoint]] {
+        return (_Clipper.differencePolygons(
+            polygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject],
+            subjFillType: fillType.mapped,
+            fromPolygons: clipPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject],
+            clipFillType: clipFillType.mapped) as! [[NSValue]]
+        ).map { $0.map { $0.cgPointValue } }
+    }
     
     /// Constructs and returns the intersection of an array of polygons
     /// with an array of polygons.
-    public class func intersectPolygons(_ subjPolygons: [[CGPoint]], subjFillType: FillType = .evenOdd, withPolygons clipPolygons: [[CGPoint]], clipFillType: FillType = .evenOdd) -> [[CGPoint]] {
+    public class func intersect(_ polygons: [[CGPoint]], fillType: FillType = .evenOdd, withPolygons clipPolygons: [[CGPoint]], clipFillType: FillType = .evenOdd) -> [[CGPoint]] {
         
-        return (_Clipper.intersectPolygons(subjPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject], subjFillType: subjFillType.mapped, withPolygons: clipPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject], clipFillType: clipFillType.mapped) as! [[NSValue]]).map { $0.map { $0.cgPointValue } }
-        }
+        return (_Clipper.intersectPolygons(
+            polygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject],
+            subjFillType: fillType.mapped,
+            withPolygons: clipPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject],
+            clipFillType: clipFillType.mapped) as! [[NSValue]]
+        ).map { $0.map { $0.cgPointValue } }
+    }
     
     /// Constructs and returns the exclusive-or boolean operation of an array of polygons
     /// with an array of polygons.
-    public class func xorPolygons(_ subjPolygons: [[CGPoint]], subjFillType: FillType = .evenOdd, withPolygons clipPolygons: [[CGPoint]], clipFillType: FillType = .evenOdd) -> [[CGPoint]] {
+    public class func xor(_ polygons: [[CGPoint]], fillType: FillType = .evenOdd, withPolygons clipPolygons: [[CGPoint]], clipFillType: FillType = .evenOdd) -> [[CGPoint]] {
         
-        return (_Clipper.xorPolygons(subjPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject], subjFillType: subjFillType.mapped, withPolygons: clipPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject], clipFillType: clipFillType.mapped) as! [[NSValue]]).map { $0.map { $0.cgPointValue } }
-        }
+        return (_Clipper.xorPolygons(
+            polygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject],
+            subjFillType: fillType.mapped,
+            withPolygons: clipPolygons.map { $0.map { NSValue(cgPoint: $0) } } as [AnyObject],
+            clipFillType: clipFillType.mapped) as! [[NSValue]]
+        ).map { $0.map { $0.cgPointValue } }
+    }
     
     /// Checks and Returns if a polygon contains a point
-    public class func polygonContainsPoint(_ polygon: [CGPoint], point:CGPoint) -> Bool {
+    public class func polygon(_ polygon: [CGPoint], contains point: CGPoint) -> Bool {
         return _Clipper.polygon(polygon.map { NSValue(cgPoint: $0) }, contains: point)
     }
 }
+

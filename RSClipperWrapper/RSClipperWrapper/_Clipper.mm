@@ -14,9 +14,9 @@
 
 @implementation _Clipper
 
-+ (NSArray *) unionPolygons:(NSArray *)subjPolygons subjFillType:(_FillType)subjFillType withPolygons:(NSArray *)clipPolygons clipFillType:(_FillType)clipFillType {
++ (NSArray *) unionPolygons:(NSArray *)subjPolygons subjFillType:(_FillType)subjFillType clipFillType:(_FillType)clipFillType {
     
-    return [_Clipper executePolygons:subjPolygons subjFillType:subjFillType withPolygons:clipPolygons clipFillType:clipFillType clipType:ClipperLib::ClipType::ctUnion];
+    return [_Clipper executePolygons:subjPolygons subjFillType:subjFillType withPolygons:[NSArray new]  clipFillType:clipFillType clipType:ClipperLib::ClipType::ctUnion];
 }
 
 + (NSArray *) differencePolygons:(NSArray *)subjPolygons subjFillType:(_FillType)subjFillType fromPolygons:(NSArray *)clipPolygons clipFillType:(_FillType)clipFillType {
